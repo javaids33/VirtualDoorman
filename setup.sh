@@ -4,6 +4,6 @@
 
 echo "Clone repositories:"
 git clone https://github.com/javaids33/VirtualDoorman
-cd vd
+cd VirtualDoorman
 
-sudo chmod -rwx vd
+sudo chmod -rwx VirtualDoorman
