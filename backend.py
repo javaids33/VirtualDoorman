@@ -21,10 +21,42 @@ def release_button():
     """Trigger the button release by shorting green & red."""
     ensure_gpio()
     try:
-        # GPIO.output(RED_PIN, GPIO.HIGH)  # Connect green & red
-        # time.sleep(0.5)  # Simulate button press duration
-        # GPIO.output(RED_PIN, GPIO.LOW)  # Disconnect
-        return "Button Released!", 200
+        # Force LOW state first to ensure clean start
+        GPIO.output(RED_PIN, GPIO.LOW)
+        time.sleep(0.1)
+
+        # Trigger the pin
+        GPIO.output(RED_PIN, GPIO.HIGH)
+        time.sleep(0.5)  # Simulate button press duration
+
+        # Explicitly set back to LOW
+        GPIO.output(RED_PIN, GPIO.LOW)
+
+        # Verify pin state
+        current_state = GPIO.input(RED_PIN)
+        return f"Button Released! Pin state: {current_state}", 200
+    except Exception as e:
+        return str(e), 500
+
+
+@app.route("/status", methods=["GET"])
+def check_status():
+    """Check the current state of the GPIO pin."""
+    ensure_gpio()
+    try:
+        state = GPIO.input(RED_PIN)
+        return f"Current GPIO state: {'HIGH' if state else 'LOW'}", 200
+    except Exception as e:
+        return str(e), 500
+
+
+@app.route("/reset", methods=["GET"])
+def reset_pin():
+    """Force the GPIO pin to LOW state."""
+    ensure_gpio()
+    try:
+        GPIO.output(RED_PIN, GPIO.LOW)
+        return "Pin reset to LOW", 200
     except Exception as e:
         return str(e), 500
 
